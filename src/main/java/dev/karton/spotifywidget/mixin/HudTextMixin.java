@@ -30,9 +30,10 @@ import net.minecraft.client.gui.Hud;
 public class HudTextMixin {
     /** Vanilla draws the held item name at {@code guiHeight - 59}. */
     //? if >=26.1 {
-    @ModifyConstant(method = "extractSelectedItemName", constant = @Constant(intValue = 59))
+    // require = 0: another HUD mod may rewrite this method; losing the nudge beats crashing the pack
+    @ModifyConstant(method = "extractSelectedItemName", constant = @Constant(intValue = 59), require = 0)
     //?} else
-    /*@ModifyConstant(method = "renderSelectedItemName", constant = @Constant(intValue = 59))*/
+    /*@ModifyConstant(method = "renderSelectedItemName", constant = @Constant(intValue = 59), require = 0)*/
     private int spotifywidget$lowerItemName(int original) {
         HudConfig config = HudConfig.get();
         if (!config.enabled || config.layout != WidgetLayout.HOTBAR) return original;

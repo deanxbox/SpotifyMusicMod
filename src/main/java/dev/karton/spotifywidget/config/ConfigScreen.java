@@ -4,6 +4,7 @@ import dev.karton.spotifywidget.compat.Screens;
 import dev.karton.spotifywidget.media.Media;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StringWidget;
+import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
@@ -85,6 +86,18 @@ public class ConfigScreen extends Screen {
                         () -> config.spotifyAppOnly = !config.spotifyAppOnly),
                 cycle(() -> "Refresh: " + config.systemPollMillis + " ms",
                         () -> config.systemPollMillis = nextOf(POLL_RATES, config.systemPollMillis)));
+
+        addRow(left, right, top, row++,
+                toggle("Hide when paused", () -> config.hidePaused, value -> config.hidePaused = value),
+                Button.builder(Component.literal("Reset to defaults"), button ->
+                        Screens.open(new ConfirmScreen(confirmed -> {
+                            if (confirmed) {
+                                config.reset();
+                                config.save();
+                            }
+                            Screens.open(new ConfigScreen(parent));
+                        }, Component.literal("Reset all settings?"),
+                                Component.literal("Every Spotify Widget option goes back to its default.")))));
 
         addRenderableWidget(Button.builder(Component.literal("Done"), button -> onClose())
                 .bounds(centerX - 75, top + row++ * ROW_HEIGHT, 150, 20)

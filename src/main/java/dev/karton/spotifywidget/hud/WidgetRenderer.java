@@ -86,6 +86,7 @@ public final class WidgetRenderer {
     private static boolean shouldShow(HudConfig config, Track track, long now) {
         if (track == null) return false;
         if (config.hideWithGui && Canvas.guiOpen()) return false;
+        if (config.hidePaused && !track.playing) return false;
         DisplayMode mode = config.displayMode;
         if (!mode.timed()) return true;
 

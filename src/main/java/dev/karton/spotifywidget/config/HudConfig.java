@@ -48,10 +48,24 @@ public final class HudConfig {
     public boolean showWaveform = true;
     /** Keep the widget off screen while any GUI (inventory, chat, menus) is open. */
     public boolean hideWithGui = false;
+    /** Fade the widget out while the player is paused. */
+    public boolean hidePaused = false;
 
     public static HudConfig get() {
         if (instance == null) instance = load();
         return instance;
+    }
+
+    /** Puts every setting back to its default, in place so existing references stay valid. */
+    public void reset() {
+        HudConfig defaults = new HudConfig();
+        try {
+            for (java.lang.reflect.Field field : HudConfig.class.getDeclaredFields()) {
+                if (!java.lang.reflect.Modifier.isStatic(field.getModifiers())) field.set(this, field.get(defaults));
+            }
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     private static Path path() {
@@ -85,6 +99,7 @@ public final class HudConfig {
             config.showTimestamps = bool(json, "showTimestamps", config.showTimestamps);
             config.showWaveform = bool(json, "showWaveform", config.showWaveform);
             config.hideWithGui = bool(json, "hideWithGui", config.hideWithGui);
+            config.hidePaused = bool(json, "hidePaused", config.hidePaused);
         } catch (Exception e) {
             SpotifyWidgetClient.LOGGER.warn("Could not read spotifywidget.json, using defaults", e);
         }
@@ -111,6 +126,7 @@ public final class HudConfig {
         json.addProperty("showTimestamps", showTimestamps);
         json.addProperty("showWaveform", showWaveform);
         json.addProperty("hideWithGui", hideWithGui);
+        json.addProperty("hidePaused", hidePaused);
         try {
             Path path = path();
             Files.createDirectories(path.getParent());

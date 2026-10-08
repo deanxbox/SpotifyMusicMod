@@ -28,6 +28,8 @@ dependencies {
     loomx.applyMojangMappings()
 
     modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
+    // fabric.mod.json depends on the "fabric-api" id, which only the full jar provides in dev
+    modLocalRuntime("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
     // Two Fabric API modules were renamed along the way
     val keyModule = if (sc.current.parsed >= "26.1") "fabric-key-mapping-api-v1" else "fabric-key-binding-api-v1"
     val resourceModule = if (sc.current.parsed >= "1.21.11") "fabric-resource-loader-v1" else "fabric-resource-loader-v0"
